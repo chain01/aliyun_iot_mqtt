@@ -7,20 +7,29 @@
     
     <body>
         <div>
-            <h3>填入设备信息：</h3>
-            productKey:<input type="text" id="productKey" name="productKey"></input><br/>
-            deviceName:<input type="text" id="deviceName" name="deviceName"></input><br/>
-            deviceSecret:<input type="text" id="deviceSecret" name="deviceSecret" style="width:300px"></input><br/>
-            timestamp:<input type="text" id="timestamp" name="timestamp"></input><br>
-            clientId:<input type="text" id="clientId" name="clientId" style="width:300px"></input><br/>
+			<h2>MQTT直连阿里云参数生成</h2>
+            <h3>aliyun设备信息：</h3>
+            productKey（必填）:<input type="text" id="productKey" name="productKey"></input><br/>
+            deviceName（必填）:<input type="text" id="deviceName" name="deviceName"></input><br/>
+            deviceSecret（必填）:<input type="text" id="deviceSecret" name="deviceSecret" style="width:300px"></input><br/>
+            timestamp（可空）:<input type="text" id="timestamp" name="timestamp"></input><br>
+            clientId（必填）:<input type="text" id="clientId" name="clientId" style="width:300px"></input><br/>
             method:<select id="signMethod" name="signMethod">
                 <option value="hmacmd5">hmacmd5</option>
                 <option value="hmacsha1" selected>hmacsha1</option>
             </select><br/><br/>
-            点击这里：<button id="submit" name="submit" onclick="onSign()">Generate</button>
+            点击这里：<button id="submit" name="submit" onclick="onSign()">生成信息</button>
             <br/>
-            <h3>签名结果：</h3>
-            password:  <input type="text" id="password" name="password" style="width:600px"></input>
+            <h3>mqtt连接参数：</h3>
+			域名:  <input type="text" id="domain" name="domain" style="width:600px"></input><br/>
+			端口:  <input type="text" id="port" name="port" </input><br/>
+			ClientID:  <input type="text" id="client" name="client" style="width:600px"</input><br/>
+            password:  <input type="text" id="password" name="password" style="width:600px"></input><br/>
+			username:  <input type="text" id="username" name="username" style="width:600px"></input><br/>
+			<br/><p style="color:red;" >by 如果能编程回忆</p>
+			
+
+			
         </div>
     </body>
 
@@ -33,6 +42,10 @@
         var ci = document.getElementById("clientId").value;
         var sm = document.getElementById("signMethod").value;
         var pw = document.getElementById("password");
+		var un = document.getElementById("username");
+		var dm = document.getElementById("domain");
+		var pt = document.getElementById("port");
+		var cd = document.getElementById("client");
         if (pk == null || pk == "" || dn == null || dn == "" 
                 || ds == null || ds == "" || ci == null || ci == "") {
             alert("productKey,deviceName,deviceSecret,clientId can not be empty");
@@ -68,6 +81,22 @@
             alert("method is invalid");
         }
         pw.value = sign.toUpperCase();
+		var user = "";
+		user = dn+"&"+pk;
+		un.value = user;
+		var mqttdomain;
+		mqttdomain=pk+".iot-as-mqtt.cn-shanghai.aliyuncs.com";
+		dm.value = mqttdomain;
+		pt.value = "1883";
+		var client;
+		if (ts == null || ts == "")
+		{
+		client = ci+"|securemode=3,signmethod="+sm+"|";
+		}
+		else{
+		client = ci+"|securemode=3,signmethod="+sm+",timestamp="+ts+"|";
+		}
+		cd.value=client;
     }
     </script>
 
