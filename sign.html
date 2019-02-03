@@ -20,6 +20,15 @@
             </select><br/><br/>
             点击这里：<button id="submit" name="submit" onclick="onSign()">生成信息</button>
             <br/>
+			<h3>一键粘贴复制信息</h3>
+			<p style="color:red;" >粘贴来自阿里云一键复制的三元组，默认使用deviceName作为clientId，需要指定clientId请使用上面手动输入</p>
+			粘贴信息:<input type="text" id="information" name="information"></input><br/>
+			method:<select id="signMethod2" name="signMethod2">
+                <option value="hmacmd5">hmacmd5</option>
+                <option value="hmacsha1" selected>hmacsha1</option>
+            </select><br/><br/>
+            点击这里：<button id="submit2" name="submit2" onclick="onSign2()">生成信息</button>
+            <br/>
             <h3>mqtt连接参数：</h3>
 			域名:  <input type="text" id="domain" name="domain" style="width:600px"></input><br/>
 			端口:  <input type="text" id="port" name="port" </input><br/>
@@ -89,6 +98,67 @@
 		dm.value = mqttdomain;
 		pt.value = "1883";
 		var client;
+		if (ts == null || ts == "")
+		{
+		client = ci+"|securemode=3,signmethod="+sm+"|";
+		}
+		else{
+		client = ci+"|securemode=3,signmethod="+sm+",timestamp="+ts+"|";
+		}
+		cd.value=client;
+    }
+	function onSign2() {
+		var it = document.getElementById("information").value;
+		var ts = document.getElementById("timestamp").value;
+		var sm = document.getElementById("signMethod2").value;		
+        var pw = document.getElementById("password");
+		var un = document.getElementById("username");
+		var dm = document.getElementById("domain");
+		var pt = document.getElementById("port");
+		var cd = document.getElementById("client");
+		var pk = it.substr(it.lastIndexOf("ProductKey: ")+12,it.lastIndexOf("DeviceName: ")-it.lastIndexOf("ProductKey: ")-19);
+		var dn = it.substr(it.lastIndexOf("DeviceName: ")+12,it.lastIndexOf("DeviceSecret: ")-it.lastIndexOf("DeviceName: ")-19);
+		var ds = it.substr(it.lastIndexOf("DeviceSecret: ")+14,it.length-it.lastIndexOf("DeviceSecret: ")-14);
+		var ci = dn;
+        if (pk == null || pk == "" || dn == null || dn == "" 
+                || ds == null || ds == "" || ci == null || ci == "") {
+            alert("productKey,deviceName,deviceSecret,clientId can not be empty");
+            return;
+        }
+        var options = {
+            productKey: pk,
+            deviceName: dn,
+            timestamp: ts,
+            clientId: ci
+        }
+        if (ts == null || ts == "") {
+            options = {
+                productKey: pk,
+                deviceName: dn,
+                clientId: ci
+            }
+        }
+        var keys = Object.keys(options).sort();
+        // 按字典序排序
+        keys = keys.sort();
+        var list = [];
+        keys.forEach(function(key) {
+            list.push(key + options[key]);
+        });
+        var contentStr = list.join('');
+        var sign="";
+        if (sm == "hmacmd5") {
+            sign = hex_hmac_md5(ds, contentStr);
+        } else if (sm == "hmacsha1") {
+            sign = hex_hmac_sha1(ds, contentStr);
+        } else {
+            alert("method is invalid");
+        }
+        pw.value = sign.toUpperCase();
+		un.value =dn+"&"+pk;
+		dm.value = pk+".iot-as-mqtt.cn-shanghai.aliyuncs.com";
+		pt.value = "1883";
+		var client="";
 		if (ts == null || ts == "")
 		{
 		client = ci+"|securemode=3,signmethod="+sm+"|";
