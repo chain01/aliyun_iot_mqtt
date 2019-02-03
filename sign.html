@@ -3,6 +3,7 @@
     <head>
         <script type="text/javascript" src="hex_hmac_sha1.js"></script>
         <script type="text/javascript" src="hex_md5.js"></script>
+		<script type="text/javascript" src="clipboard.min.js"></script>
     </head>
     
     <body>
@@ -30,19 +31,53 @@
             点击这里：<button id="submit2" name="submit2" onclick="onSign2()">生成信息</button>
             <br/>
             <h3>mqtt连接参数：</h3>
-			域名:  <input type="text" id="domain" name="domain" style="width:600px"></input><br/>
-			端口:  <input type="text" id="port" name="port" </input><br/>
-			ClientID:  <input type="text" id="client" name="client" style="width:600px"</input><br/>
-            password:  <input type="text" id="password" name="password" style="width:600px"></input><br/>
-			username:  <input type="text" id="username" name="username" style="width:600px"></input><br/>
+			域名:  <input type="text" id="domain" name="domain" style="width:400px"></input><button class="domain" data-clipboard-action="copy" data-clipboard-target="#domain">点击复制</button><br/>
+			端口:  <input type="text" id="port" name="port" </input><button class="port" data-clipboard-action="copy" data-clipboard-target="#port">点击复制</button><br/>
+			ClientID:  <input type="text" id="client" name="client" style="width:400px"</input><button class="client" data-clipboard-action="copy" data-clipboard-target="#client">点击复制</button><br/>
+			username:  <input type="text" id="username" name="username" style="width:400px"></input><button class="username" data-clipboard-action="copy" data-clipboard-target="#username">点击复制</button><br/>
+            password:  <input type="text" id="password" name="password" style="width:400px"></input><button class="password" data-clipboard-action="copy" data-clipboard-target="#password">点击复制</button><br/>			
 			<br/><p style="color:red;" >by 如果能编程回忆</p>
-			
 
 			
         </div>
     </body>
 
     <script>
+	    var clipboard = new ClipboardJS('.domain');
+		clipboard.on('success', function(e) {
+         alert("复制成功！");
+		});
+		clipboard.on('error', function(e) {
+         alert("对不起，您的浏览器暂不支持一键复制功能！");
+		});
+		var clipboard = new ClipboardJS('.port');
+		clipboard.on('success', function(e) {
+         alert("复制成功！");
+		});
+		clipboard.on('error', function(e) {
+         alert("对不起，您的浏览器暂不支持一键复制功能！");
+		});
+		var clipboard = new ClipboardJS('.client');
+		clipboard.on('success', function(e) {
+         alert("复制成功！");
+		});
+		clipboard.on('error', function(e) {
+         alert("对不起，您的浏览器暂不支持一键复制功能！");
+		});
+			var clipboard = new ClipboardJS('.username');
+		clipboard.on('success', function(e) {
+         alert("复制成功！");
+		});
+		clipboard.on('error', function(e) {
+         alert("对不起，您的浏览器暂不支持一键复制功能！");
+		});
+			var clipboard = new ClipboardJS('.password');
+		clipboard.on('success', function(e) {
+         alert("复制成功！");
+		});
+		clipboard.on('error', function(e) {
+         alert("对不起，您的浏览器暂不支持一键复制功能！");
+		});
     function onSign() {
         var pk = document.getElementById("productKey").value;
         var dn = document.getElementById("deviceName").value;
@@ -90,12 +125,8 @@
             alert("method is invalid");
         }
         pw.value = sign.toUpperCase();
-		var user = "";
-		user = dn+"&"+pk;
-		un.value = user;
-		var mqttdomain;
-		mqttdomain=pk+".iot-as-mqtt.cn-shanghai.aliyuncs.com";
-		dm.value = mqttdomain;
+		un.value = dn+"&"+pk;
+		dm.value = pk+".iot-as-mqtt.cn-shanghai.aliyuncs.com";
 		pt.value = "1883";
 		var client;
 		if (ts == null || ts == "")
